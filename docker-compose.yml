@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  db:
+    build: ./db
+    env_file:
+      - ./db/.env
+    container_name: bank-mssql
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - banknet
+
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    container_name: bank-backend
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    networks:
+      - banknet
+
+  frontend:
+    image: nginx:latest
+    container_name: bank-frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    networks:
+      - banknet
+
+volumes:
+  mssql-data:
+
+networks:
+  banknet:
