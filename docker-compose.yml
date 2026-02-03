@@ -1,11 +1,11 @@
-version: "3.9"
-
 services:
   db:
     build: ./db
-    env_file:
-      - ./db/.env
     container_name: bank-mssql
+    environment:
+      ACCEPT_EULA: "${ACCEPT_EULA}"
+      SA_PASSWORD: "${SA_PASSWORD}"
+      MSSQL_PID: "${MSSQL_PID}"
     ports:
       - "1433:1433"
     volumes:
@@ -15,9 +15,13 @@ services:
 
   backend:
     build: ./backend
-    env_file:
-      - ./backend/.env
     container_name: bank-backend
+    environment:
+      DB_HOST: "${DB_HOST}"
+      DB_USER: "${DB_USER}"
+      DB_PASS: "${DB_PASS}"
+      DB_NAME: "${DB_NAME}"
+      PORT: "${PORT}"
     depends_on:
       - db
     ports:
